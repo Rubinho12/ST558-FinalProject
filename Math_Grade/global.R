@@ -2,6 +2,7 @@ library(shiny)
 library(shinydashboard)
 library(tidyverse)
 library(ggplot2)
+library(DT)
 library(Metrics)
 library(caret)
 

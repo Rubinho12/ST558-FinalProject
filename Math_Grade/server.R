@@ -8,13 +8,17 @@
 #
 
 library(shiny)
-source('global.R')
+source("global.R")
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
 
-    
+   output$mathLink <- renderUI({
+     tagList(a("Student performance data set", 
+               href= "https://archive.ics.uci.edu/ml/datasets/Student+Performance"))
+   }) 
+   
+   #output$mathPicture <- renderImage({})
 
-    
 
 })
