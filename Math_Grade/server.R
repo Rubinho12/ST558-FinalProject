@@ -25,7 +25,7 @@ shinyServer(function(input, output, session) {
    })
    
    output$Mouzinho_school_picture <- renderImage({
-     list(src= 'Mouzinho Da Silveira school.png', align = "right")
+     list(src= 'Mouzinho Da Silveira .png', align = "left")
    })
 
 })

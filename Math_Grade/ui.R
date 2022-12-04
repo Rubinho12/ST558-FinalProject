@@ -67,7 +67,7 @@ dashboardPage(skin = 'red',
                                 subset  it and save it as a file."))),
 
                       #column(4,
-                             h1("Gabriel Pereira Picture"),
+                             h1("Gabriel Pereira"),
                              imageOutput(outputId = "Gabriel_school_picture"),
                 
                              h1("Mouzinho Da Silveira"),
