@@ -22,11 +22,14 @@ dashboardPage(skin = 'red',
             menuItem("Data Exploration", tabName = "Tab2"),
             menuItem("Modeling", tabName = "Tab3"),
             menuItem("Data ", tabName = "Tab4")
-          )),
+            
+          )), # Closes dashboardSidebar
           
           # # define the body of the app 
           dashboardBody(
             tabItems(
+              
+              # First page (About the App)
               tabItem(tabName = "Tab1",
 
                 column(4, h1("Purpose of the App"), box(width=10,
@@ -73,22 +76,55 @@ dashboardPage(skin = 'red',
                              h1("Mouzinho Da Silveira"),
                              imageOutput(outputId = "Mouzinho_school_picture")
 
-            ),
+            ), # End of the first page
           
         
-        
+            # Fourth page (The Data page)
             tabItem(tabName = "Tab4",
                     
-                    column(4, h1("look")),
-                    column(4, h1("boss")))
-)
+                    # Subset by row, choose the school
+                    column(4, h4("Subset the data by school name"),
+                           selectizeInput(inputId = "school", 
+                                       label = "Select the school of your choice",
+                                       choices = c("Gabriel Pereira", "Mozinho Da Silveira"))),
+                    
+                    # Subset by columns, choose the variables
+                    column(4, h4("Subset the data by the features"),
+                           selectInput(inputId = "features",
+                                       label = "Select the variables of your choice",
+                                       choices = c( 'Sex', 'Age', 'Study time', 'Internet', 
+                                                   'Free time', 'Absences','Romantic', 'Health', 'G1', 'G2', 'G3'))),
+                    
+                    # Download the data
+                    downloadButton(outputId = "mathData", label = "Download data"),
+                    
+                    dataTableOutput("table"),
+                    
+                    column(4, h4(strong('Meaning of the Variables')), box(width = 10,
+                           h4(strong('Sex :'), 'the gender of the student; male or female'),
+                           h4(strong("Age :"), "Age of the student"),
+                           h4(strong("Study time:"), "the amount of time the student studies after class "),
+                           h4(strong("Internet:"), "whether the student has an internet connection at home or not"),
+                           h4(strong("Free time:"), "the amount of free time the student has outside of class"),
+                           h4(strong("Absences:"), "the number of time the student was absent from school"),
+                           h4(strong("Romantic:"), "whether the student is in a romantic relationship or not"),
+                           h4(strong("Health:"), "the health status of the studnet"),
+                           h4(strong("G1:"), "first period grade"),
+                           h4(strong("G2:"), "second period grade"),
+                           h4(strong("G3:"), "final grade")))
+
+                    
+                    
+                    ) # End of the 4th page
+            
+            
+            
+            
+    ) # Closes tabItems
         
+          ) # Closes dashboardBody   
         
-          )   
-        
-        
-        
-)
+) # Closes dashboardPage
           
 
   
