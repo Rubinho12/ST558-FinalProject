@@ -31,10 +31,9 @@ dashboardPage(skin = 'red',
 
                 column(4, h1("Purpose of the App"), box(width=10,
                           h4("This app predicts the final year grade in Mathematics for secondary 
-                             Portugese students at 2 different schools, based on various factors 
-                          including but not limited to the first and second periods grades, 
-                          the amount of free time after school, the health of the student, 
-                          etc..."))),
+                             students at 2 different Portugese schools,(Gabriel Pereira and Mousinho Da Silveira), 
+                             based on various factors including but not limited to the first and second periods 
+                             grades, the amount of free time after school, the health of the student, etc..."))),
 
                       column(4, h1("About the data"), box(width=12,
                              h4("The data was obtained from the UCI Machine Learning Repository.
@@ -67,8 +66,12 @@ dashboardPage(skin = 'red',
                              h4("The last page lets the user scroll through the data set, 
                                 subset  it and save it as a file."))),
 
-                      column(4,h1("Picture"), box(width=10,
-                             imageOutput(outputId = "mathPicture")))
+                      #column(4,
+                             h1("Gabriel Pereira Picture"),
+                             imageOutput(outputId = "Gabriel_school_picture"),
+                
+                             h1("Mouzinho Da Silveira"),
+                             imageOutput(outputId = "Mouzinho_school_picture")
 
             ),
           
