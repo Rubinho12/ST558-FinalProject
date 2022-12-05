@@ -25,7 +25,7 @@ dashboardPage(skin = 'red',
             
           )), # Closes dashboardSidebar
           
-          # # define the body of the app 
+          ## Define the body of the app 
           dashboardBody(
             tabItems(
               
@@ -77,9 +77,63 @@ dashboardPage(skin = 'red',
                              imageOutput(outputId = "Mouzinho_school_picture")
 
             ), # End of the first page
-          
-        
-            # Fourth page (The Data page)
+            
+            
+###########################################################################################################################          
+              # Second page(Data exploration)
+              tabItem(tabName = "Tab2",
+                    fluidRow (
+                    box(width = 4, 
+                        h4("Here we will get some numerical summaries and plots"),
+                        br(),
+                        h4("Filter the data by school"),
+                        selectizeInput(inputId = "school", 
+                                       label="Select the school of your choice",
+                                       choices = c("Gabriel Pereira", "Mozinho Da Silveira"))),
+                    
+                    box(width = 10,
+                        h4("Filter the data by variables"),
+                        selectizeInput(inputId = "vars",
+                                       label="Select the variables of your choice",
+                                       choices = names(math)[c(3,7,10,11,12)])),
+                    
+                    column(4, h4(strong('Meaning of the Variables')), box(width = 10,
+                                h4(strong("Age :"), "Age of the student"),
+                                h4(strong("Absences:"), "the number of time the student was absent from school"),
+                                h4(strong("G1:"), "first period grade"),
+                                h4(strong("G2:"), "second period grade"),
+                                h4(strong("G3:"), "final grade"))),
+                    
+                    
+                    column(10, h4("Numerical summaries"), box(width = 8, tableOutput("Table"))),
+                    
+                    box(width = 5,
+                        radioButtons(inputId = "plot", label = "Select the plot of your choice",
+                                     choices = c("Density", "Scatterplot", "Histogram"),
+                                     selected = "Density"),
+                    
+                    plotOutput("plots"))),
+                    
+                    box(width = 5,
+                        h4("A scatter plot allows us to see the relationship between two 
+                        numeric variabes. A strong relationship shows a more linear trend, whereas
+                        a weak relation shows points that are scattered"),
+                        
+                        h4("A density plot shows the distribution of the data or the variable.
+                           A symmetric plot says that the variable is normally distributed, 
+                           a right skewed plot says that 50% of the variable values are less
+                           than the mean, and in a left skewed plot the mean is less than
+                           the median"),
+                        
+                        h4("A histogram is similar to a density plot, as it tells us the 
+                           distribution of the data or variable."))
+                    
+                    ), # End of second page
+            
+            
+            
+#####################################################################################################################            
+              # Fourth page (The Data page)
             tabItem(tabName = "Tab4",
                     
                     # Subset by row, choose the school
@@ -108,12 +162,12 @@ dashboardPage(skin = 'red',
                            h4(strong("Free time:"), "the amount of free time the student has outside of class"),
                            h4(strong("Absences:"), "the number of time the student was absent from school"),
                            h4(strong("Romantic:"), "whether the student is in a romantic relationship or not"),
-                           h4(strong("Health:"), "the health status of the studnet"),
+                           h4(strong("Health:"), "the health status of the student"),
                            h4(strong("G1:"), "first period grade"),
                            h4(strong("G2:"), "second period grade"),
                            h4(strong("G3:"), "final grade")))
 
-                    
+                   
                     
                     ) # End of the 4th page
             
