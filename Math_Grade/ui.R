@@ -79,8 +79,8 @@ dashboardPage(skin = 'red',
             ), # End of the first page
             
             
-###########################################################################################################################          
-              # Second page(Data exploration)
+######################################################################################################################################          
+              # SECOND PAGE (Data exploration)
               tabItem(tabName = "Tab2",
                     fluidRow (
                     box(width = 4, 
@@ -131,9 +131,92 @@ dashboardPage(skin = 'red',
                     ), # End of second page
             
             
-            
-#####################################################################################################################            
-              # Fourth page (The Data page)
+####################################################################################################################################### 
+              # THIRD PAGE (Modeling)
+            tabItem(tabName = "Tab3",
+              tabsetPanel(
+                tabPanel("Modeling Info",
+                      h1("Multiple Linear Regression"),
+                      box(width=12,
+                          
+                          h4("Multiple Linear Regression (MLR) is a supervised machine learning model that involves
+                             a numeric response variable Y and at least two predictor or explanotary variables X's.The
+                             goal of MLR is to either predict the response variable using the explanotary 
+                             variables or understand the relationship between the response variable and the
+                             predictors. MLR is is widely used in practice as it allows data professionals to 
+                             answer a wide range of important questions involving the variables."),
+                          
+                          h4(strong('Benefits of MLR:')),
+                          h4("- Simplest form of machine laearning model"),
+                          h4("- Can be less flexible, which generates less variance"),
+                          h4("- great fit when the relation between the response and the predictors is linear"),
+                          h4("- easier to interpret"),
+                          h4(strong("Drawbacks of MLR:")),
+                          h4("- Fit poorly when the relation between the response and the predictors is not linear "),
+                          h4("- Less flexible comapared to other models, hence high bias"),
+                          h4(" - Assume a form of relation(linear) between the response and the predictors"),
+                          h4(" - has less predictability ability in relation to other models"),
+                          h4(strong("MLR equation: ")),
+                          h4(withMathJax(helpText("$$Y_i=\\beta_0+\\beta_1x_{1i}+\\beta_2x_{2i}+\\beta_3x_{1i}x_{2i}  +...+ E_i$$"))),
+                          
+                      ), # Closes first box
+                      
+                      h1("Regression Tree"),
+                      box(width=14, 
+                          h4("Regression trees are a nonparametric regression method that creates a binary tree by recursively 
+                          splitting the data on the predictor values.The splits are selected so that the two child nodes have smaller 
+                          variability around their average value than the parent node. Various options are used to control how deep the 
+                          tree is grown. Regression predictions for an observation are based on the mean value of all the responses in the 
+                          terminal node.The Predictor columns can be either numeric or character."),
+                          h4(strong('Benefits of Regression Trees:')),
+                          h4("- Easy to explain, even easier than linear regression"),
+                          h4("- Can be displayed graphically, easily interpreted by non-expert"),
+                          h4("- Can easily handle qualitative predictors without the need to create dummy variables"),
+                          h4(strong('Drawbacks of Regression Trees:')),
+                          h4("- Trees don't have the same level of predictive accuracy compared to other regression models"),
+                          h4("- can be very flexible, with a high variance. A little change in the data can change the 
+                             tree significantly"),
+                          h4(withMathJax(helpText("$$R_1(j,s) = {{x|x_j < s}} , R_2(j,s) = {{x|x_j \\ge s}}$$"))),
+                          h4("The above equations are a pair of half-planes, adn we seek the value of j and s that minimize
+                             the residual sum of squares (See ISLR2 (Page 331))")
+                          
+                      ), # Closes second box
+                      
+                      h1("Random Forest"),
+                      box(width = 14,
+                        h4("Random forest (RF) is supervised statistical machine learning algorithm , constructed from decision trees, 
+                            that is used in regression and classification problems. RF is part of a general learning method called ensemble 
+                            learning. The idea of ensemble learning is to build a prediction model by combining the strengths of a collection 
+                            of simpler base models, or in layman terms, an ensemble learning simply means combining multiple models.
+                            RF builds decision trees on different samples and takes their majority vote for classification and average for 
+                            regression. It is an extension of another ensemble learning method called Bagging or Bootstrap Aggregation. Bagging 
+                            chooses a random sample from the data, and generates different models from those samples called Bootstrap samples, 
+                            the sample is usually done with replacement."),
+                        
+                        h4(strong('Benefits of Random Forest:')),
+                        h4("Can perform both regression and classification tasks"),
+                        h4("produces good predictions that can be understood easily"),
+                        h4("can handle large datasets efficiently"),
+                        h4("higher level of accuracy in predicting outcomes"),
+                        h4(strong('Drawbacks of Random Forest:')),
+                        h4("Random forests are found to be biased while dealing with categorical variables"),
+                        h4("Slow Training"),
+                        h4("suitable for linear methods with a lot of sparse features."),
+                        h4("High variance, poor in interpreting results"),
+                        h4("In RF, we use: "),
+                        h4(withMathJax(helpText("$$ m = \\sqrt{p}$$"))),
+                        
+                          
+                          
+                      ) # Closes third box
+                          
+                                  
+              ) # Closes First tab     
+      )# Closes tab set panel 
+
+), # Closes the third page
+######################################################################################################################################           
+              # FOURTH PAGE (The Data page)
             tabItem(tabName = "Tab4",
                     
                     # Subset by row, choose the school

@@ -13,8 +13,8 @@ source("global.R")
 # Define server logic required
 shinyServer(function(input, output, session) {
   
-#######################################################################################################################    
-  ## FIRST PAGE
+#################################################################################################################################   
+  ## FIRST PAGE (About the App)
     # Link to the website
    output$mathLink <- renderUI({
      tagList(a("Student performance data set", 
@@ -31,8 +31,8 @@ shinyServer(function(input, output, session) {
    }, deleteFile = F)
    
    
- ######################################################################################################################
-  ## SECOND PAGE
+ ###############################################################################################################################
+  ## SECOND PAGE (Data Exploration)
    
    # Conditional logic
    exploration_data <- reactive({
@@ -71,7 +71,7 @@ shinyServer(function(input, output, session) {
        
      } else if (input$plot == "Scatterplot"){
        ggraph <- ggplot(data = df_math(), aes(y = G3, x = df_math()[,input$vars]))+
-        geom_point(aes(color= df_math()[,input$vars]))+
+        geom_point(aes(color= G3))+
         ggtitle("Scatterplot of", input$vars)+
          labs( x = input$vars, y = 'Final Grade')
        
@@ -89,7 +89,15 @@ shinyServer(function(input, output, session) {
    output$plots <- renderPlot({
      graphs()
      })
- #####################################################################################################################  
+   
+####################################################################################################################################
+  ## THIRD PAGE (Modelling) 
+   
+   
+   
+   
+   
+ ###################################################################################################################################  
   ## FOURTH PAGE
   schoolChoice <- reactive({ 
     switch (input$chool, 
