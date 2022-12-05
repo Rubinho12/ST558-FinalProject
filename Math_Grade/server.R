@@ -92,11 +92,129 @@ shinyServer(function(input, output, session) {
    
 ####################################################################################################################################
   ## THIRD PAGE (Modelling) 
+  
+   ## Split the data into train and test set
+    dat.split <- reactive({
+     set.seed(12)
+     index <- initial_split(math, prop = input$proportion)
+     train.set <- training(index)
+     test.set <- testing(index)
+     return(list(train.set = train.set, test.set = test.set))
+   }) 
+   
+   ## Set formulas
+   F1 <- reactive({
+     n <- length(input$predictors)
+     if (n==0){
+       return(formula(paste0(input$predictors, '~','(school + sex + age + studytime + internet + freetime + abscences + romantic
+                             + health + G1 + G2)')))
+     } else {
+       f1 <- paste0(input$predictors, c(rep("+", n-1), ""))
+       f2 <- paste0(f1, collapse = "")
+       return(formula(paste0(input$response, '~', f2)))
+     }
+   })
+   
+   F2 <- reactive({
+     n <- length(input$predictors)
+     if (n==0){
+       return(formula(paste0(input$predictors, '~','(school + sex + age + studytime + internet + freetime + abscences + romantic
+                             + health + G1 + G2)')))
+     } else {
+       f3 <- paste0(input$predictors, c(rep("*", n-1), ""))
+       f4 <- paste0(f3, collapse = "")
+       return(formula(paste0(input$response, '~', f4)))
+     }
+   })
+   
+   ## Fit the models
+    # MLR
+   mlr <- eventReactive(input$runmodel,{
+     mlr_mod <- train(F1(),data = dat.split()[["train.set"]],
+                      method = 'lm',
+                      preProcess = c('center', 'scale'),
+                      trControl = trainControl(method = 'cv', number = input$cvfold, repeats = 5))
+     return(mlr_mod)
+   })
+   
+    # Regression tree
+   rt <- eventReactive(input$runmodel,{
+     rtree_mod <- train(F2(), data = dat.split()[["train.set"]], 
+                        method = "rpart",
+                        trControl = trainControl(method = "repeatedcv", number = input$cvfold, repeats = 5),
+                        preProcess = c("center", "scale"),
+                        tuneGrid = data.frame(cp = (input$min_cp:input$max_cp)))
+     return(rtree_mod)
+   })
+   
+    # Random Forest 
+   rf <- eventReactive(input$runmodel,{
+     rf_mod <- train(F2(), data = dat.split()[["train.set"]], 
+                    method = "rf",
+                    trControl = trainControl(method = "repeatedcv", number = input$cvfold, repeats = 5),
+                    preProcess = c("center", "scale"),
+                    tuneGrid = data.frame(mtry = input$min_mtry:input$max_mtry))
+     return(rf_mod)
+     
+   })
+   
+   ## Summaries for the three models
+   output$MLR_sum <- renderPrint({
+     if(input$runmodel){summary(mlr())}
+       })
+   
+   output$RTree_sum <- renderPrint({
+     if(input$runmodel){summary(rt())}
+   })
+   
+   output$RF_sum <- renderPrint({
+     if(input$runmodel){summary(rf())}
+   })
    
    
+  ## RMSE for the three models
+   output$MLR_RMSE <- renderPrint({
+     mlr <- mlr()
+     MLR.rmse <- as.data.frame(min(mlr()$results['RMSE']))
+     names(MLR.rmse) <- 'RMSE'
+     return(MLR.rmse)
+   })
    
+   output$RTree_RMSE <- renderPrint({
+     rt <- rt()
+     RTree.rmse <- as.data.frame(min(rt()$results['RMSE']))
+     names(RTree.rmse) <- 'RMSE'
+     return(RTree.rmse)
+   })
    
+   output$RF_RMSE <- renderPrint({
+     rf <- rf()
+     RF.rmse <- as.data.frame(min(rf()$results['RMSE']))
+     names(RF.rmse) <- 'RMSE'
+     return(RF.rmse)
+   })
    
+  ## Predictions
+   output$G3pred <- eventReactive(input$prediction, {
+     pred.dat <- dat.split()[["test.set"]]
+     pred.dat$age <- input$age_pred ; pred.dat$absences <- input$absc_pred ; pred.dat$G1 <- input$G1_pred
+     pred.dat$G2 <- input$G2_pred ; pred.dat$sex <- input$sex_pred ; pred.dat$internet <- input$internet_pred
+     pred.dat$school <- input$school_pred ; pred.dat$romantic <- input$rom_pred ; pred.dat$health <- input$health_pred
+     pred.dat$freetime <- input$freetime_pred ; pred.dat$studytime <- input$studytime_pred
+     
+   if (input$modelSelection == "Multiple Linear Regression"){
+     mlr.predict <- (predict(mlr(), newdata = pred.dat))[1]
+     return(mlr.predict)
+     
+   } else if (input$modelSelection == "Regression Tree"){
+     rtree.predict <- (predict(rt(), newdata = pred.dat))[1]
+     return(rtree.predict)
+     
+   } else if(input$modelSelection == "Random Forest"){
+     rf.predict <- (predict(rf(), newdata = pred.dat))[1]
+     return(rf.predict)
+   }
+   })
  ###################################################################################################################################  
   ## FOURTH PAGE
   schoolChoice <- reactive({ 

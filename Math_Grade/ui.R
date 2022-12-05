@@ -223,7 +223,7 @@ dashboardPage(skin = 'red',
                                              label = "Select the response variable",
                                              choices = c("G3"))),
                           box(width = 5,
-                              selectizeInput(inputId = "predictors",
+                              checkboxGroupInput(inputId = "predictors",
                                               label = "Select the predictors variables",
                                               choices = c(names(math)[(-12)]))),
 
@@ -251,25 +251,26 @@ dashboardPage(skin = 'red',
                              ),
 
                           box(width = 5,
-                              actionButton(inputId = "runmodel", label = strong("Click to generate models !"))),
+                              actionButton(inputId = "runmodel", label = strong("Click to generate models !")),
+                              h4("Note, it might take some minutes before the models generate!")),
 
 
                           column(10,
                                  box(width = 12,
-                                     h4("MLR summary"), verbatimTextOutput("MLR")),
+                                     h4("MLR summary"), verbatimTextOutput("MLR_sum")),
                                  box(width = 12,
-                                     h4("Regression Tree summary"), verbatimTextOutput("RTree")),
+                                     h4("Regression Tree summary"), verbatimTextOutput("RTree_sum")),
                                  box(width = 12,
-                                     h4("Random Forest summary"), verbatimTextOutput("RF"))),
+                                     h4("Random Forest summary"), verbatimTextOutput("RF_sum"))),
 
                           column(10,
                                  box(width = 12,
                                  h3(strong("RMSE of the models")),
                                  h4("RMSE is a measure metric of regression models, and the lower
                                     the RMSE, the better the model."),
-                                 h4("MLR"), verbatimTextOutput("MLR_RMSE"),
+                                 h4("Multiple Linear Regression"), verbatimTextOutput("MLR_RMSE"),
                                  h4("Regression Tree"), verbatimTextOutput("RTree_RMSE"),
-                                 h4("Random Forest"), verbatimTextOutput(("RF_MSE"))))
+                                 h4("Random Forest"), verbatimTextOutput(("RF_RMSE"))))
                           
                         ) # Closes second fluid row
                          
@@ -285,12 +286,9 @@ dashboardPage(skin = 'red',
                                      choices = c("Multiple Linear Regression", "Regression Tree", "Random Forest"),
                                      selected = "Regression Tree")),
                                  
-                                 box(width = 10,
-                                     h4("Predict the model!"),
-                                     actionButton(inputId = "prediction", label = "Click to predict model!")),
                                  
                                  box(width = 10,
-                                     h4(strong("Choose the desired variables")),
+                                     h4(strong("Choose the values of  variables")),
                                      numericInput(inputId = "age_pred", label= "Student age", min = 15, max = 22, value = 16),
                                      numericInput(inputId = "absc_pred", label= "Number of abscences", min = 0, max = 75, value = 1),
                                      numericInput(inputId = "G1_pred", label= "First term grade", min = 3, max = 19, value = 12),
@@ -307,6 +305,10 @@ dashboardPage(skin = 'red',
                                                  choices = c('Less than 2 hours','between 2 to 5 hours','between 5 to 10 hours',
                                                              'more than 10 hours'), selected = 'between 2 to 5 hours')
                                  ),
+                                 
+                                 box(width = 10,
+                                     h4("Predict the model!"),
+                                     actionButton(inputId = "prediction", label = "Click to predict model!")),
                                  
                                  box(width = 10,
                                      h4("The final grade is"), verbatimTextOutput("G3pred")))
