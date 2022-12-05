@@ -5,6 +5,7 @@ library(ggplot2)
 library(DT)
 library(Metrics)
 library(caret)
+library(rsample)
 
 
 data <- read_delim("student-mat.csv", delim = ';')
