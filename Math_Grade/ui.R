@@ -177,7 +177,7 @@ dashboardPage(skin = 'red',
                           h4("- can be very flexible, with a high variance. A little change in the data can change the 
                              tree significantly"),
                           h4(withMathJax(helpText("$$R_1(j,s) = {{x|x_j < s}} , R_2(j,s) = {{x|x_j \\ge s}}$$"))),
-                          h4("The above equations are a pair of half-planes, adn we seek the value of j and s that minimize
+                          h4("The above equations are a pair of half-planes, and we seek the value of j and s that minimize
                              the residual sum of squares (See ISLR2 (Page 331))")
                           
                       ), # Closes second box
@@ -209,9 +209,117 @@ dashboardPage(skin = 'red',
                           
                           
                       ) # Closes third box
+                        ), # Closes First tab  
+                
+                tabPanel("Model Fitting",
+                         
+                        fluidRow(
+                          column(6, 
+                                 box(width = 12, 
+                                     sliderInput(inputId = "proportion", label= "Choose a proportion for the train  set",
+                                                 min = 0.60, max = 0.90, value = 0.80, step = 0.05))),
+                          box(width = 5,
+                              selectizeInput(inputId = "response",
+                                             label = "Select the response variable",
+                                             choices = c("G3"))),
+                          box(width = 5,
+                              selectizeInput(inputId = "predictors",
+                                              label = "Select the predictors variables",
+                                              choices = c(names(math)[(-12)]))),
+
+                          box(width = 12,
+                              h4("Choose the number of cross validationn folds"),
+                              sliderInput(inputId = "cvfold", label = "Select the number of folds",
+                                          min = 1 , max = 10, value = 5, step = 1)),
+
+                          box(width = 5,
+                              h4("Choose cp parameter for the regresson tree model"),
+                              numericInput(inputId = "min_cp", label = "Minumum value of cp", 
+                                           min = 0.01, max = 0.01, value = 0.01),
+                              numericInput(inputId = 'max_cp', label = "Select the maximum value of cp", 
+                                           min= 0.05, value = 0.1),
+                              #numericInput(inputId = "cp_step", label = "Select the step", value = 0.01)
+                              ),
+
+                          box(width = 5,
+                              h4("Choose the random forest parameter"),
+                              numericInput(inputId = "min_mtry", label = " Minumum value of  mtry", min = 1,
+                                           max = 1, value = 1),
+                              numericInput(inputId = 'max_mtry', label = "Select the maximum value of mtry", 
+                                           min = 10, max = 30, value = 10),
+                             # numericInput(inputId = "mtry_step", label = "Select the step", value = 1)),
+                             ),
+
+                          box(width = 5,
+                              actionButton(inputId = "runmodel", label = strong("Click to generate models !"))),
+
+
+                          column(10,
+                                 box(width = 12,
+                                     h4("MLR summary"), verbatimTextOutput("MLR")),
+                                 box(width = 12,
+                                     h4("Regression Tree summary"), verbatimTextOutput("RTree")),
+                                 box(width = 12,
+                                     h4("Random Forest summary"), verbatimTextOutput("RF"))),
+
+                          column(10,
+                                 box(width = 12,
+                                 h3(strong("RMSE of the models")),
+                                 h4("RMSE is a measure metric of regression models, and the lower
+                                    the RMSE, the better the model."),
+                                 h4("MLR"), verbatimTextOutput("MLR_RMSE"),
+                                 h4("Regression Tree"), verbatimTextOutput("RTree_RMSE"),
+                                 h4("Random Forest"), verbatimTextOutput(("RF_MSE"))))
                           
-                                  
-              ) # Closes First tab     
+                        ) # Closes second fluid row
+                         
+                   ),# Closes second tab
+                
+                
+                tabPanel("Model Prediction",
+                         fluidRow(
+                          column(6,
+                                 box(width = 10,
+                                     h4("Select a model!"),
+                                     radioButtons(inputId = "modelSelection",label = "",
+                                     choices = c("Multiple Linear Regression", "Regression Tree", "Random Forest"),
+                                     selected = "Regression Tree")),
+                                 
+                                 box(width = 10,
+                                     h4("Predict the model!"),
+                                     actionButton(inputId = "prediction", label = "Click to predict model!")),
+                                 
+                                 box(width = 10,
+                                     h4(strong("Choose the desired variables")),
+                                     numericInput(inputId = "age_pred", label= "Student age", min = 15, max = 22, value = 16),
+                                     numericInput(inputId = "absc_pred", label= "Number of abscences", min = 0, max = 75, value = 1),
+                                     numericInput(inputId = "G1_pred", label= "First term grade", min = 3, max = 19, value = 12),
+                                     numericInput(inputId = "G2_pred", label= "Second term grade", min = 0, max = 19, value = 14),
+                                     selectInput(inputId = "sex_pred", label= "Student gender", choices = c('M','F')),
+                                     selectInput(inputId = "internet_pred", label= "Access to internet", choices = c('no','yes'), selected = 'yes'),
+                                     selectInput(inputId = "school_pred", label= "Student school", choices = c('GP','MS')),
+                                     selectInput(inputId = "rom_pred", label= "In a relationship", choices = c('no','yes')),
+                                     selectInput(inputId = "health_pred", label= "Student heath status", 
+                                                 choices = c('Very bad','Bad', 'Average', 'Good', 'Very good'), selected = 'Good'),
+                                     selectInput(inputId = "freetime_pred", label= "Free time after class", 
+                                                 choices = c('Very low','Low','Moderate', 'High','Very high'), selected = 'Moderate'),
+                                     selectInput(inputId = "studytime_pred", label= "Number of hours studied", 
+                                                 choices = c('Less than 2 hours','between 2 to 5 hours','between 5 to 10 hours',
+                                                             'more than 10 hours'), selected = 'between 2 to 5 hours')
+                                 ),
+                                 
+                                 box(width = 10,
+                                     h4("The final grade is"), verbatimTextOutput("G3pred")))
+                           
+                           
+                           
+                           
+                         ) # Closes the third fluid row
+                        ) # Closes third tab
+        
+                
+                
+                  
       )# Closes tab set panel 
 
 ), # Closes the third page
