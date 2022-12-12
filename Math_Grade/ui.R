@@ -11,7 +11,7 @@ library(shiny)
 source("global.R")
 
 # Define UI for application that predict final grades
-dashboardPage(skin = 'red',
+dashboardPage(skin = 'purple',
           
           # Application title
           dashboardHeader(title = 'Final Year Math Grade for Secondary Students', titleWidth=450),
@@ -214,15 +214,30 @@ dashboardPage(skin = 'red',
                 tabPanel("Model Fitting",
                          
                         fluidRow(
+                          column(4, h4(strong('Meaning of the Variables')), box(width = 10,
+                                                                                h4(strong('Sex :'), 'the gender of the student; male or female'),
+                                                                                h4(strong("Age :"), "Age of the student"),
+                                                                                h4(strong("Study time:"), "the amount of time the student studies after class "),
+                                                                                h4(strong("Internet:"), "whether the student has an internet connection at home or not"),
+                                                                                h4(strong("Free time:"), "the amount of free time the student has outside of class"),
+                                                                                h4(strong("Absences:"), "the number of time the student was absent from school"),
+                                                                                h4(strong("Romantic:"), "whether the student is in a romantic relationship or not"),
+                                                                                h4(strong("Health:"), "the health status of the student"),
+                                                                                h4(strong("G1:"), "first period grade"),
+                                                                                h4(strong("G2:"), "second period grade"),
+                                                                                h4(strong("G3:"), "final grade"))),
+                          
                           column(6, 
                                  box(width = 12, 
                                      sliderInput(inputId = "proportion", label= "Choose a proportion for the train  set",
                                                  min = 0.60, max = 0.90, value = 0.80, step = 0.05))),
                           box(width = 5,
                               selectizeInput(inputId = "response",
-                                             label = "Select the response variable",
+                                             label = "Select the response variable (Final grade to be predicted)",
                                              choices = c("G3"))),
                           box(width = 5,
+                              h4(strong(" Note: G1 and G2 are the first and second terms grades respectively. They must be selected 
+                                 for an accurate final grade prediction.")),
                               checkboxGroupInput(inputId = "predictors",
                                               label = "Select the predictors variables",
                                               choices = c(names(math)[(-12)]))),
@@ -230,7 +245,7 @@ dashboardPage(skin = 'red',
                           box(width = 12,
                               h4("Choose the number of cross validationn folds"),
                               sliderInput(inputId = "cvfold", label = "Select the number of folds",
-                                          min = 1 , max = 10, value = 5, step = 1)),
+                                          min = 1 , max = 10, value = 3, step = 1)),
 
                           box(width = 5,
                               h4("Choose cp parameter for the regresson tree model"),
@@ -252,7 +267,8 @@ dashboardPage(skin = 'red',
 
                           box(width = 5,
                               actionButton(inputId = "runmodel", label = strong("Click to generate models !")),
-                              h4("Note, it might take some minutes before the models generate!")),
+                              h4(strong("Note: it might take some minutes before the models generate, especially if
+                                        all the predictors are selected. Pick few predictors for a start!"))),
 
 
                           column(10,
@@ -279,13 +295,17 @@ dashboardPage(skin = 'red',
                 
                 tabPanel("Model Prediction",
                          fluidRow(
+                          column(4, h4(strong("Note: Only the values of the predictors selected in fitting the model on the previous page can be 
+                                       adjusted in the model prediction. Changing the value or input of a predictor on this page that was not 
+                                       selected in fitting the model will not have any effect on the final result."))),
                           column(6,
                                  box(width = 10,
                                      h4("Select a model!"),
                                      radioButtons(inputId = "modelSelection",label = "",
                                      choices = c("Multiple Linear Regression", "Regression Tree", "Random Forest"),
-                                     selected = "Regression Tree")),
+                                     selected = "Multiple Linear Regression")),
                                  
+                                 tableOutput('prediction'),
                                  
                                  box(width = 10,
                                      h4(strong("Choose the values of  variables")),
@@ -307,17 +327,20 @@ dashboardPage(skin = 'red',
                                  ),
                                  
                                  box(width = 10,
-                                     h4("Predict the model!"),
-                                     actionButton(inputId = "prediction", label = "Click to predict model!")),
+                                     h4("Predict the final Math grade!"),
+                                     actionButton(inputId = "prediction", label = "Click to predict the final grade!")),
                                  
                                  box(width = 10,
-                                     h4("The final grade is"), verbatimTextOutput("G3pred")))
+                                     h4("The final Math grade is"), verbatimTextOutput("G3pred")))
                            
                            
                            
                            
                          ) # Closes the third fluid row
-                        ) # Closes third tab
+                        ),# Closes third tab
+                
+                
+                         
         
                 
                 
@@ -329,43 +352,43 @@ dashboardPage(skin = 'red',
               # FOURTH PAGE (The Data page)
             tabItem(tabName = "Tab4",
                     
-                    # Subset by row, choose the school
-                    column(4, h4("Subset the data by school name"),
-                           selectizeInput(inputId = "school", 
-                                       label = "Select the school of your choice",
-                                       choices = c("Gabriel Pereira", "Mozinho Da Silveira"))),
+                    # Subset by row, choose the number of rows
+                    column(4, h4("Subset the data by row"),
+                           sliderInput(inputId = "row", 
+                                       label = "Select the number of rows",
+                                       min = 1, max = 100, step = 1, value = 25)),
                     
                     # Subset by columns, choose the variables
-                    column(4, h4("Subset the data by the features"),
-                           selectInput(inputId = "features",
+                    column(4, h4("Subset the data by colums"),
+                           checkboxGroupInput(inputId = "features",
+                                       
                                        label = "Select the variables of your choice",
-                                       choices = c( 'Sex', 'Age', 'Study time', 'Internet', 
-                                                   'Free time', 'Absences','Romantic', 'Health', 'G1', 'G2', 'G3'))),
+                                       
+                                       #choices = c( 'Sex', 'Age', 'Study time', 'Internet', 
+                                       #            'Free time', 'Absences','Romantic', 'Health', 'G1', 'G2', 'G3'),
+                                       
+                                       choices = names(math1)[-13],
+                                       #multiple = TRUE,
+                                       
+                                       #selected = c( 'Sex', 'Age', 'Study time', 'Internet', 
+                                       #              'Free time', 'Absences','Romantic', 'Health', 'G1', 'G2', 'G3'),
+                                       selected = names(math1))),
+                                       
                     
                     # Download the data
                     downloadButton(outputId = "mathData", label = "Download data"),
                     
+                    
+                    # Print the subset data
                     dataTableOutput("table"),
                     
-                    column(4, h4(strong('Meaning of the Variables')), box(width = 10,
-                           h4(strong('Sex :'), 'the gender of the student; male or female'),
-                           h4(strong("Age :"), "Age of the student"),
-                           h4(strong("Study time:"), "the amount of time the student studies after class "),
-                           h4(strong("Internet:"), "whether the student has an internet connection at home or not"),
-                           h4(strong("Free time:"), "the amount of free time the student has outside of class"),
-                           h4(strong("Absences:"), "the number of time the student was absent from school"),
-                           h4(strong("Romantic:"), "whether the student is in a romantic relationship or not"),
-                           h4(strong("Health:"), "the health status of the student"),
-                           h4(strong("G1:"), "first period grade"),
-                           h4(strong("G2:"), "second period grade"),
-                           h4(strong("G3:"), "final grade")))
+                    
 
                    
                     
                     ) # End of the 4th page
-            
-            
-            
+
+        
             
     ) # Closes tabItems
         

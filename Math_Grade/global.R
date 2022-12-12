@@ -7,14 +7,16 @@ library(Metrics)
 library(caret)
 library(rsample)
 
-
+## Read in the data
 data <- read_delim("student-mat.csv", delim = ';')
 head(data)
 
+## Select the variables for the app
 math <- data %>%
   select( school, sex, age, studytime, internet, freetime, absences, romantic, health, G1, G2, G3)
 
 
+## Coerce the character variables into factors
 math$sex <- as.factor(math$sex)
 
 math$studytime <- factor (math$studytime , levels = c(1,2,3,4), 
@@ -30,3 +32,7 @@ math$health <- factor(math$health, levels = c(1,2,3,4,5),
 
 math$romantic <- as.factor(math$romantic)
 
+
+## For the data page, create a vector of numbers equal to the length of the data and combine that vector to the math data
+numbers <- cbind(1:395)
+math1 <- cbind(math,numbers)

@@ -133,7 +133,7 @@ shinyServer(function(input, output, session) {
      mlr_mod <- train(F1(),data = dat.split()[["train.set"]],
                       method = 'lm',
                       preProcess = c('center', 'scale'),
-                      trControl = trainControl(method = 'cv', number = input$cvfold, repeats = 5))
+                      trControl = trainControl(method = 'cv', number = input$cvfold))
      return(mlr_mod)
    })
    
@@ -141,7 +141,7 @@ shinyServer(function(input, output, session) {
    rt <- eventReactive(input$runmodel,{
      rtree_mod <- train(F2(), data = dat.split()[["train.set"]], 
                         method = "rpart",
-                        trControl = trainControl(method = "repeatedcv", number = input$cvfold, repeats = 5),
+                        trControl = trainControl(method = "repeatedcv", number = input$cvfold, repeats = 3),
                         preProcess = c("center", "scale"),
                         tuneGrid = data.frame(cp = (input$min_cp:input$max_cp)))
      return(rtree_mod)
@@ -151,7 +151,7 @@ shinyServer(function(input, output, session) {
    rf <- eventReactive(input$runmodel,{
      rf_mod <- train(F2(), data = dat.split()[["train.set"]], 
                     method = "rf",
-                    trControl = trainControl(method = "repeatedcv", number = input$cvfold, repeats = 5),
+                    trControl = trainControl(method = "repeatedcv", number = input$cvfold, repeats = 3),
                     preProcess = c("center", "scale"),
                     tuneGrid = data.frame(mtry = input$min_mtry:input$max_mtry))
      return(rf_mod)
@@ -201,63 +201,39 @@ shinyServer(function(input, output, session) {
      pred.dat$G2 <- input$G2_pred ; pred.dat$sex <- input$sex_pred ; pred.dat$internet <- input$internet_pred
      pred.dat$school <- input$school_pred ; pred.dat$romantic <- input$rom_pred ; pred.dat$health <- input$health_pred
      pred.dat$freetime <- input$freetime_pred ; pred.dat$studytime <- input$studytime_pred
-     
+    
+    
    if (input$modelSelection == "Multiple Linear Regression"){
      mlr.predict <- (predict(mlr(), newdata = pred.dat))[1]
-     return(mlr.predict)
+     return(as.numeric(mlr.predict))
      
    } else if (input$modelSelection == "Regression Tree"){
      rtree.predict <- (predict(rt(), newdata = pred.dat))[1]
-     return(rtree.predict)
+     return(as.numeric(rtree.predict))
      
    } else if(input$modelSelection == "Random Forest"){
      rf.predict <- (predict(rf(), newdata = pred.dat))[1]
-     return(rf.predict)
+     return(as.numeric(rf.predict))
    }
+     
    })
+   
+   
+   
  ###################################################################################################################################  
   ## FOURTH PAGE
-  schoolChoice <- reactive({ 
-    switch (input$chool, 
-    'Gabriel Pereira' = 'GP',
-    'Mozinho Da Silveira' = 'MS')
   
-    })
-  varChoice <- reactive({
-   switch(input$vars,
-          'Sex' = 'sex',
-          "Age" = 'age',
-          "Study time" = 'studytime',
-          "Internet" = 'internet',
-          "Free time" = 'freetime',
-          "Absences" = 'absences',
-          "Romantic" = 'romantic',
-          "Health" = 'health',
-          "G1" = 'G1',
-          "G2" = 'G2',
-          "G3" = 'G3')
-          
-          
-           })
-  
-  output$table <- renderDataTable({
-   # schol <- schoolChoice()
-   # if(schol == 'GP'){
-   #   return(math %>% select(sex, age, internet) %>% datatable())
-   # } else{
-   #   return(math %>% filter(school == schol) %>% select(input$school) %>% datatable())
-   # }
-  
-  #    if (input$school == 'GP'){
-  #     math %>%  filter(school = 'GP') %>% select(sex,age) %>% datatable()
-  #   } else if(input$school == 'MS'){
-  #     math %>% filter(school ='MS') %>% select(sex,age) %>% datatable()
-  #   }
-  #
-    })
-  
-  #output$mathData <- downloadHandler(filename = "student-math.csv",content = function(file){write.csv(math,file)})
-  
-  
+    # Subset the data
+   output$table <- renderDataTable({
+     sub <- math1 %>% select(input$features) %>% filter(numbers <= input$row)
+   })
+   
+   subdata <- reactive({
+     sub <- math1 %>% select(input$features) %>% filter(numbers <= input$row)
+   })
+   
+   # Download the subset data
+   output$mathData <- downloadHandler(filename = "Subset of Math data.csv",
+                                      content = function(file){write.csv(subdata(),file)})
 
 }) # Close shiny server
