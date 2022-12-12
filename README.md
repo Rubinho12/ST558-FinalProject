@@ -22,6 +22,6 @@
   `install.packages(c('shiny', 'shinydashboard' , 'tidyverse' ,'ggplot2' ,'DT' , 'Metrics' , 'caret' , 'rsample'))`  
   
   Code to run the app  
-  `shiny::runGitHub("ST558-FinalProject", "Rubinho12")`
+  `shiny::runGitHub("ST558-FinalProject", "Rubinho12", subdir = "Math_Grade/")`
  
   
